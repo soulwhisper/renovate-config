@@ -3,10 +3,6 @@ name: Schedule - Renovate
 on:
   workflow_dispatch:
     inputs:
-      autodiscover_regex:
-        description: "Autodiscover by Regex"
-        default: "*"
-        required: false
       autodiscover_tags:
         description: "Autodiscover by Tags/Topics"
         default: "managed-by-renovate"
@@ -37,7 +33,6 @@ jobs:
         env:
           LOG_LEVEL: "debug"
           RENOVATE_AUTODISCOVER: true
-          RENOVATE_AUTODISCOVER_FILTER: ${{ github.repository_owner }}/${{ inputs.autodiscover_filter }}
           RENOVATE_AUTODISCOVER_TOPICS: ${{ inputs.autodiscover_tags }}
           RENOVATE_PLATFORM: "github"
           RENOVATE_PLATFORM_COMMIT: "true"
