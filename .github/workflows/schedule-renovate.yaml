@@ -4,11 +4,6 @@ on:
   schedule:
     - cron: '0 * * * *'
   workflow_dispatch:
-    inputs:
-      autodiscover_tags:
-        description: "Autodiscover by Tags/Topics"
-        default: "managed-by-renovate"
-        required: false
 
 jobs:
   renovate:
@@ -33,7 +28,7 @@ jobs:
         env:
           LOG_LEVEL: "debug"
           RENOVATE_AUTODISCOVER: true
-          RENOVATE_AUTODISCOVER_TOPICS: ${{ inputs.autodiscover_tags }}
+          RENOVATE_AUTODISCOVER_TOPICS: "managed-by-renovate"
           RENOVATE_PLATFORM: "github"
           RENOVATE_PLATFORM_COMMIT: "true"
         with:
