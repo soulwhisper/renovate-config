@@ -10,7 +10,7 @@
     "github>soulwhisper/renovate-config:commit-message",
     "github>soulwhisper/renovate-config:pr-labels",
     "github>soulwhisper/renovate-config:semantic-commits",
-    "github>soulwhisper/renovate-config:custom-managers"
+    "github>soulwhisper/renovate-config:custom-managers.json5"
   ],
   "timezone": "Asia/Shanghai",
   "dependencyDashboardTitle": "Renovate Dashboard",
