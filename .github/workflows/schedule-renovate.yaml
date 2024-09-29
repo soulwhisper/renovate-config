@@ -1,14 +1,14 @@
 name: Schedule - Renovate
 
 on:
+  schedule:
+    - cron: '0 * * * *'
   workflow_dispatch:
     inputs:
       autodiscover_tags:
         description: "Autodiscover by Tags/Topics"
         default: "managed-by-renovate"
         required: false
-  schedule:
-    - cron: "0 * * * *"
 
 jobs:
   renovate:
