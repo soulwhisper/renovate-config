@@ -1,0 +1,46 @@
+---
+name: Schedule - Renovate
+
+on:
+  workflow_dispatch:
+    inputs:
+      autodiscover_regex:
+        description: "Autodiscover by Regex"
+        default: "*"
+        required: false
+      autodiscover_tags:
+        description: "Autodiscover by Tags/Topics"
+        default: "managed-by-renovate"
+        required: false
+  schedule:
+    - cron: "0 * * * *"
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.LAB_ASSISTANT_APP_ID }}
+          private-key: ${{ secrets.LAB_ASSISTANT_APP_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+
+      - name: Renovate
+        uses: renovatebot/github-action@v40.2.8
+        env:
+          LOG_LEVEL: "debug"
+          RENOVATE_AUTODISCOVER: true
+          RENOVATE_AUTODISCOVER_FILTER: ${{ github.repository_owner }}/${{ inputs.autodiscover_filter }}
+          RENOVATE_AUTODISCOVER_TOPICS: ${{ inputs.autodiscover_tags }}
+          RENOVATE_PLATFORM: "github"
+          RENOVATE_PLATFORM_COMMIT: "true"
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
