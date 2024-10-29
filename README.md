@@ -3,5 +3,5 @@ Renovate configuration presets, inspired by [bjw-s/renovate-config](https://gith
 
 ## Global renovate ci
 Check all owner's repos with Topics/Tags "managed-by-renovate" every hour.
-- LAB_ASSISTANT_APP_ID  => self-hosted-app-id
-- LAB_ASSISTANT_APP_KEY => self-hosted-app-key
+- PRIVATE_APP_ID
+- PRIVATE_APP_KEY

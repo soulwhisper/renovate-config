@@ -1,14 +1,17 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended",
-    ":dependencyDashboard",
+    "config:best-practices",
+    ":separateMultipleMajorReleases",
+    ":approveMajorUpdates",
+	  ":dependencyDashboard",
     ":disableRateLimiting",
-    "docker:enableMajor",
     ":enablePreCommit",
-    "github>soulwhisper/renovate-config:automerge-github-actions",
+	  ":docker",
+    "docker:enableMajor",
+	  "github>soulwhisper/renovate-config:labels",
+    "github>soulwhisper/renovate-config:ignore-tests",
     "github>soulwhisper/renovate-config:commit-message",
-    "github>soulwhisper/renovate-config:pr-labels",
     "github>soulwhisper/renovate-config:semantic-commits",
     "github>soulwhisper/renovate-config:custom-managers.json5"
   ],
