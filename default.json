@@ -20,5 +20,7 @@
   "suppressNotifications": ["prIgnoreNotification"],
   "commitBodyTable": true,
   "rebaseWhen": "auto",
-  "platformCommit": "enabled"
+  "platformCommit": "enabled",
+  "automerge": true,
+  "automergeType": "branch"
 }
