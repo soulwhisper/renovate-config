@@ -26,5 +26,5 @@ jobs:
         with:
           token: "${{ steps.app-token.outputs.token }}"
           repository: "${{ github.repository }}"
-          retain_days: "7"
-          keep_minimum_runs: "10"
+          retain_days: "3"
+          keep_minimum_runs: "5"
