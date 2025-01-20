@@ -21,6 +21,4 @@
   "commitBodyTable": true,
   "rebaseWhen": "auto",
   "platformCommit": "enabled",
-  "automerge": true,
-  "automergeType": "branch"
 }
