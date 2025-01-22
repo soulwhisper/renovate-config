@@ -2,15 +2,11 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:best-practices",
-    ":separateMultipleMajorReleases",
     ":approveMajorUpdates",
-    ":dependencyDashboard",
     ":disableRateLimiting",
-    ":enablePreCommit",
     ":docker",
-    "docker:enableMajor",
     "github>soulwhisper/renovate-config:labels",
-    "github>soulwhisper/renovate-config:ignore-tests",
+    "github>soulwhisper/renovate-config:automerge",
     "github>soulwhisper/renovate-config:commit-message",
     "github>soulwhisper/renovate-config:semantic-commits",
     "github>soulwhisper/renovate-config:custom-managers.json5"
@@ -20,5 +16,5 @@
   "suppressNotifications": ["prIgnoreNotification"],
   "commitBodyTable": true,
   "rebaseWhen": "auto",
-  "platformCommit": "enabled",
+  "platformCommit": "enabled"
 }
