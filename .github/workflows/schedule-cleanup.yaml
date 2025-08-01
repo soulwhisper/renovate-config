@@ -1,4 +1,3 @@
-
 name: Schedule - Cleanup
 
 on:
@@ -20,11 +19,35 @@ jobs:
           app-id: ${{ secrets.PRIVATE_APP_ID }}
           private-key: ${{ secrets.PRIVATE_APP_KEY }}
           owner: ${{ github.repository_owner }}
-
-      - name: Delete workflow runs
+      - name: Cleanup workflow stale runs
         uses: Mattraks/delete-workflow-runs@4c9f24749b7996562658e3d6e10662489e22caca # v2
         with:
           token: "${{ steps.app-token.outputs.token }}"
           repository: "${{ github.repository }}"
           retain_days: "0"
-          keep_minimum_runs: "10"
+          keep_minimum_runs: "0"
+          delete_run_by_conclusion_pattern: "cancelled,skipped"
+      - name: Cleanup workflow success runs
+        uses: Mattraks/delete-workflow-runs@4c9f24749b7996562658e3d6e10662489e22caca # v2
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+          repository: "${{ github.repository }}"
+          retain_days: "0"
+          keep_minimum_runs: "5"
+          delete_run_by_conclusion_pattern: "success"
+      - name: Clenaup workflow failure runs
+        uses: Mattraks/delete-workflow-runs@4c9f24749b7996562658e3d6e10662489e22caca # v2
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+          repository: "${{ github.repository }}"
+          retain_days: "0"
+          keep_minimum_runs: "1"
+          delete_run_by_conclusion_pattern: "action_required,failure"
+
+  workflow-keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: liskin/gh-workflow-keepalive@v1
