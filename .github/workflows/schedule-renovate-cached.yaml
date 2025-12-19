@@ -1,0 +1,64 @@
+name: Schedule - Renovate - Cached
+
+on:
+  # schedule:
+  #   - cron: "0,30 * * * *"
+  workflow_dispatch:
+    inputs:
+      repoCache:
+        description: "Reset or disable the cache?"
+        type: choice
+        default: enabled
+        options:
+          - enabled
+          - disabled
+          - reset
+
+env:
+  cache_dir: /tmp/renovate/cache/renovate/repository
+  cache_key: renovate-cache
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.PRIVATE_APP_ID }}
+          private-key: ${{ secrets.PRIVATE_APP_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+
+      - name: Cache Renovate
+        uses: actions/cache@v5
+        if: github.event.inputs.repoCache != 'disabled'
+        with:
+          path: ${{ env.cache_dir }}
+          key: ${{ env.cache_key }}
+
+      - name: Renovate Action
+        uses: renovatebot/github-action@822441559e94f98b67b82d97ab89fe3003b0a247 # v44.2.0
+        env:
+          LOG_LEVEL: "debug"
+          RENOVATE_AUTODISCOVER: true
+          RENOVATE_AUTODISCOVER_TOPICS: "managed-by-renovate"
+          RENOVATE_PLATFORM: "github"
+          RENOVATE_PLATFORM_COMMIT: "true"
+          RENOVATE_REPOSITORY_CACHE: ${{ github.event.inputs.repoCache || 'enabled' }}
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+
+  workflow-keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: liskin/gh-workflow-keepalive@f72ff1a1336129f29bf0166c0fd0ca6cf1bcb38c # v1
