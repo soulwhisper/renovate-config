@@ -1,4 +1,4 @@
-name: Schedule - Renovate
+name: Renovate - Cached
 
 on:
   schedule:
@@ -15,7 +15,6 @@ on:
           - reset
 
 env:
-  cache_archive: renovate_cache.tar.gz
   cache_dir: /tmp/renovate/cache/renovate/repository
   cache_key: renovate-cache
 
@@ -37,28 +36,12 @@ jobs:
         with:
           token: "${{ steps.app-token.outputs.token }}"
 
-      - name: Download Renovate Cache
-        uses: dawidd6/action-download-artifact@ac66b43f0e6a346234dd65d4d0c8fbb31cb316e5 # v11
+      - name: Cache Renovate
+        uses: actions/cache@v5
         if: github.event.inputs.repoCache != 'disabled'
-        continue-on-error: true
         with:
-          github_token: "${{ steps.app-token.outputs.token }}"
-          name: ${{ env.cache_key }}
-          path: cache-download
-
-      - name: Extract Renovate Cache
-        run: |
-          set -x
-          if [ ! -d cache-download ] ; then
-            echo "No cache found."
-            exit 0
-          fi
-
-          mkdir -p $cache_dir
-          tar -xzf cache-download/$cache_archive -C $cache_dir
-
-          sudo chown -R 12021:0 /tmp/renovate/
-          ls -R $cache_dir
+          path: ${{ env.cache_dir }}
+          key: ${{ env.cache_key }}
 
       - name: Renovate Action
         uses: renovatebot/github-action@822441559e94f98b67b82d97ab89fe3003b0a247 # v44.2.0
@@ -71,19 +54,6 @@ jobs:
           RENOVATE_REPOSITORY_CACHE: ${{ github.event.inputs.repoCache || 'enabled' }}
         with:
           token: "${{ steps.app-token.outputs.token }}"
-
-      - name: Compress Renovate Cache
-        run: |
-          ls $cache_dir
-          tar -czvf $cache_archive -C $cache_dir .
-
-      - name: Upload Renovate Cache
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
-        if: github.event.inputs.repoCache != 'disabled'
-        with:
-          name: ${{ env.cache_key }}
-          path: ${{ env.cache_archive }}
-          retention-days: 1
 
   workflow-keepalive:
     if: github.event_name == 'schedule'
