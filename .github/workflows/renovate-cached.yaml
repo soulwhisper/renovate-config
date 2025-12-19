@@ -4,19 +4,6 @@ on:
   schedule:
     - cron: "0,30 * * * *"
   workflow_dispatch:
-    inputs:
-      repoCache:
-        description: "Reset or disable the cache?"
-        type: choice
-        default: enabled
-        options:
-          - enabled
-          - disabled
-          - reset
-
-env:
-  cache_dir: /tmp/renovate/cache/renovate/repository
-  cache_key: renovate-cache
 
 jobs:
   renovate:
@@ -36,12 +23,13 @@ jobs:
         with:
           token: "${{ steps.app-token.outputs.token }}"
 
-      - name: Cache Renovate
+      - name: Cache Renovate Repository
         uses: actions/cache@v5
-        if: github.event.inputs.repoCache != 'disabled'
         with:
-          path: ${{ env.cache_dir }}
-          key: ${{ env.cache_key }}
+          path: /tmp/renovate/cache/renovate/repository
+          key: renovate-repository-${{ github.run_id }}
+          restore-keys: |
+            renovate-repository-
 
       - name: Restore Permissions
         run: |
@@ -58,7 +46,7 @@ jobs:
           RENOVATE_AUTODISCOVER_TOPICS: "managed-by-renovate"
           RENOVATE_PLATFORM: "github"
           RENOVATE_PLATFORM_COMMIT: "true"
-          RENOVATE_REPOSITORY_CACHE: ${{ github.event.inputs.repoCache || 'enabled' }}
+          RENOVATE_REPOSITORY_CACHE: "enabled"
         with:
           token: "${{ steps.app-token.outputs.token }}"
 
