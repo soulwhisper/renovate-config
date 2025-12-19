@@ -43,6 +43,13 @@ jobs:
           path: ${{ env.cache_dir }}
           key: ${{ env.cache_key }}
 
+      - name: Restore Permissions
+        run: |
+          if [ -d /tmp/renovate ]; then
+            echo "fixing renovate perms"
+            sudo chown -R 12021:0 /tmp/renovate/
+          fi
+
       - name: Renovate Action
         uses: renovatebot/github-action@822441559e94f98b67b82d97ab89fe3003b0a247 # v44.2.0
         env:
