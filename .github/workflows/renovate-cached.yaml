@@ -24,7 +24,7 @@ jobs:
           token: "${{ steps.app-token.outputs.token }}"
 
       - name: Cache Renovate Repository
-        uses: actions/cache@v5
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5
         with:
           path: /tmp/renovate/cache/renovate/repository
           key: renovate-repository-${{ github.run_id }}
