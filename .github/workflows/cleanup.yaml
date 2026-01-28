@@ -44,6 +44,34 @@ jobs:
           keep_minimum_runs: "1"
           delete_run_by_conclusion_pattern: "action_required,failure"
 
+      - name: Cleanup renovate caches
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          REPO: ${{ github.repository }}
+          PREFIXES: "renovate-repository-" # separate list items by space
+          KEEP_COUNT: 3
+        run: |
+          echo "Fetching list of caches for $REPO with prefix $PREFIX..."
+          cache_ids=$(gh cache list -R "$REPO" \
+            --sort last_accessed_at \
+            --order desc \
+            --limit 100 \
+            --json key,id,lastAccessedAt | \
+            jq -r --arg p "$PREFIX" --argjson k "$KEEP_COUNT" \
+            '.[] | select(.key | startswith($p)) | .id' | \
+            tail -n +$(($KEEP_COUNT + 1)))
+          if [ -z "$cache_ids" ]; then
+            echo "No old caches to delete."
+            exit 0
+          fi
+          echo "Found old caches to delete. Processing..."
+          for id in $cache_ids; do
+            echo "Deleting cache ID: $id"
+            gh cache delete "$id" -R "$REPO" || echo "Failed to delete $id, skipping..."
+            sleep 1
+          done
+          echo "Cache cleanup complete."
+
   workflow-keepalive:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest

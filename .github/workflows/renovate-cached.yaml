@@ -2,13 +2,18 @@ name: Renovate - Cached
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 */4 * * *" # every 4 hours
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   renovate:
     name: Renovate
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
@@ -41,7 +46,7 @@ jobs:
       - name: Renovate Action
         uses: renovatebot/github-action@eaf12548c13069dcc28bb75c4ee4610cdbe400c5 # v44.2.6
         env:
-          LOG_LEVEL: "debug"
+          LOG_LEVEL: "info"
           RENOVATE_AUTODISCOVER: true
           RENOVATE_AUTODISCOVER_TOPICS: "managed-by-renovate"
           RENOVATE_PLATFORM: "github"
@@ -49,25 +54,6 @@ jobs:
           RENOVATE_REPOSITORY_CACHE: "enabled"
         with:
           token: "${{ steps.app-token.outputs.token }}"
-
-      - name: Keep last 4 Caches by Prefix
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          REPO: ${{ github.repository }}
-          PREFIXES: "renovate-repository-" # separate list items by space
-        run: |
-          for prefix in $PREFIXES; do
-            echo "Processing cache prefix: $prefix"
-
-            gh cache list -R "$REPO" \
-              --sort last_accessed_at \
-              --order desc \
-              --limit 100 \
-              --json key,id | \
-            jq -r --arg p "$prefix" '.[] | select(.key | startswith($p)) | .id' | \
-            tail -n +5 | \
-            xargs -r -I {} gh cache delete {} -R "$REPO"
-          done
 
   workflow-keepalive:
     if: github.event_name == 'schedule'
