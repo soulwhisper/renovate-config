@@ -46,7 +46,7 @@ jobs:
       - name: Renovate Action
         uses: renovatebot/github-action@44f24283a60f64273f1294932f16ba61193cccca # v46.1.0
         env:
-          LOG_LEVEL: "info"
+          LOG_LEVEL: "debug"
           RENOVATE_AUTODISCOVER: true
           RENOVATE_AUTODISCOVER_TOPICS: "managed-by-renovate"
           RENOVATE_PLATFORM: "github"
