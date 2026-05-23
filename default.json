@@ -11,6 +11,14 @@
     "github>soulwhisper/renovate-config:semantic-commits",
     "github>soulwhisper/renovate-config:custom-managers.json5"
   ],
+  "ignorePresets": [":ignoreModulesAndTests"],
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/vendor/**",
+    "**/examples/**",
+    "**/__fixtures__/**"
+  ],
   "timezone": "Asia/Shanghai",
   "dependencyDashboardTitle": "Renovate Dashboard",
   "suppressNotifications": ["prIgnoreNotification"],
