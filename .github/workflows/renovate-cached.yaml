@@ -57,6 +57,7 @@ jobs:
           RENOVATE_PLATFORM: "github"
           RENOVATE_PLATFORM_COMMIT: "enabled"
           RENOVATE_REPOSITORY_CACHE: "enabled"
+          RENOVATE_USE_CLOUD_METADATA_SERVICES: false
         with:
           token: "${{ steps.app-token.outputs.token }}"
 
