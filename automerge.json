@@ -1,19 +1,16 @@
 {
-    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "packageRules": [
-        {
-            "matchManagers": ["github-actions"],
-            "automerge": true,
-            "automergeType": "branch",
-            "matchUpdateTypes": ["minor", "patch", "digest"],
-            "ignoreTests": true
-        },
-        {
-            "matchDatasources": ["docker"],
-            "automerge": true,
-            "automergeType": "branch",
-            "matchUpdateTypes": ["digest"],
-            "ignoreTests": true
-        }
-    ]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      "description": "Disable Docker digest updates entirely",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["digest"],
+      "enabled": false
+    },
+    {
+      "description": "Keep GitHub Actions at major tags only",
+      "matchManagers": ["github-actions"],
+      "pinDigests": false
+    }
+  ]
 }
